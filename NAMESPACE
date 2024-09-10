@@ -1,0 +1,7 @@
+exportPattern("^[[:alpha:]]+")
+import(Seurat)
+import(presto)
+import(lsa)
+import(FNN)
+import(dplyr)
+import(logr)
