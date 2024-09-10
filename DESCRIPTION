@@ -1,11 +1,10 @@
 Package: ScInfeR
 Type: Package
-Title: ScInfeR: graph-based cell type annotation toolkit for single-cell RNA-seq, ATAC-seq, and spatial omics
+Title: Graph-based cell type annotation toolkit for single-cell RNA-seq, ATAC-seq, and spatial omics
 Version: 0.0.1
 Author: Asish Kumar Swain
 Maintainer: Asish Kumar Swain <swain.3@iitj.ac.in>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Graph-based cell type annotation toolkit for single-cell RNA-seq, ATAC-seq, and spatial omics
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
