@@ -1,3 +1,51 @@
+Available_reference_tissue_type <- function(){
+  figshare_file <-read.csv("https://raw.githubusercontent.com/swainasish/ScInfeR/master/ShinyApp/datasets/download_url_csv.csv")
+  avl <- data.frame(all_tissu_types)
+  colnames(avl) <-"Available tissue types"
+  print(avl)
+}
+
+fetch_markerset <- function(tissue_type){
+  all_tissue_types <- c("Bladder", "Bone marrow", "Brain", "Breast", "Eye", "Heart",
+                        "Intestine", "Kidney", "Liver", "Lungs", "Pancreas", "PBMC", "Skin")
+  if(tissue_type %in% all_tissu_types){
+    m_df <- openxlsx::read.xlsx("https://raw.githubusercontent.com/swainasish/ScInfeR/master/ShinyApp/datasets/scinfer_combined_hs.xlsx",
+                                sheet = tissue_type)
+    return(m_df)
+  }
+  else{
+    cat("Given input tissue type not present in ScInfeRDB \n")
+    avl <- data.frame(all_tissue_types)
+    colnames(avl) <-"Available tissue types"
+    print(avl)
+  }
+}
+
+
+fetch_scRNA_reference<-function(tissue_type,path=F){
+  if(path != F){
+    destination <- paste0(path,"/scinfer_download.rds")
+  }
+  else{
+    destination <- paste0(getwd(),"/scinfer_download.rds")
+  }
+  figshare_file <-read.csv("https://raw.githubusercontent.com/swainasish/ScInfeR/master/ShinyApp/datasets/download_url_csv.csv")
+  rownames(figshare_file) <- figshare_file$Tissue
+  t_type <- tissue_type
+  if(t_type %in% figshare_file$Tissue)
+  {t_link <-figshare_file[t_type,"url"]
+  options(timeout=10000)
+  download.file(t_link,destfile = destination)
+  t_seurat <- LoadSeuratRds(destination)
+  return(t_seurat)
+
+  }else{
+    cat("Given input tissue type not present in ScInfeRDB \n")
+    avl <- data.frame(figshare_file$Tissue)
+    colnames(avl) <-"Available tissue types"
+    print(avl)
+  }
+}
 
 
 process_marker_file <- function(ct_marker_df,subtype_stat,subtype_info){
@@ -154,7 +202,7 @@ core_func<- function(expression_matrix ,
       log_print(unique(st_m_df$celltype),console = F)
 
       st_predictions_clus <- subtype_classification(st_mat,umap_embd_st,
-                                                    st_m_df,own_weigh=own_weightage,
+                                                    st_m_df,own_weight=own_weightage,
                                                     n_neighbor=n_neighbor)
       result_df[which(clus_bool),1] <- st_predictions_clus
     }else if(st_avl==1){

@@ -12,7 +12,7 @@ library(googlesheets4)
 gs4_deauth()
 
 
-all_tissu_types <- c("Bladder", "Bone marrow", "Brain", "Breast", "Eye", "Heart", 
+all_tissu_types <- c("Bladder", "Bone marrow", "Brain", "Breast", "Eye", "Heart",
                      "Intestine", "Kidney", "Liver", "Lungs", "Pancreas", "PBMC", "Skin")
 figshare_url <- read.csv("datasets/download_url_csv.csv")
 rownames(figshare_url) <- figshare_url$Tissue
@@ -24,25 +24,25 @@ colnames(suggest_marker_df) <- c("Time-stamp","User name","Tissue","Cell type","
 #                      row.names = 1)
 # links<-read_excel("hirarchy_tissue_scinfer.xlsx",
 #                      sheet = "Lungs")
-# 
+#
 # subsetdf=read_excel("datasets/scinferdb_MASTER_UMAP.xlsx",
 #                     sheet = "Bladder",n_max = 5000)
 # row.names(subsetdf) <- NULL
 # ggplot(data=subsetdf,aes(x=umap_1,y=umap_2,color=Celltype))+geom_point(size=0.2)
 # From these flows we need to create a node data frame: it lists every entities involved in the flow
 # nodes <- data.frame(
-#   name=c(as.character(links$source), 
+#   name=c(as.character(links$source),
 #          as.character(links$target)) %>% unique()
 # )
-# 
+#
 # # With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
-# links$IDsource <- match(links$source, nodes$name)-1 
+# links$IDsource <- match(links$source, nodes$name)-1
 # links$IDtarget <- match(links$target, nodes$name)-1
 
 # Make the Network
 # p <- sankeyNetwork(Links = links, Nodes = nodes,
 #                    Source = "IDsource", Target = "IDtarget",
-#                    Value = "value", NodeID = "name", 
+#                    Value = "value", NodeID = "name",
 #                    sinksRight=FALSE)
 
 CSS <- "
@@ -69,38 +69,23 @@ ui <- fluidPage(theme = shinytheme("yeti"),
                    navbarMenu("Documentation",
                               tabPanel("Installation",
                                        fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Annotate scRNA-seq (Marker-based)",
+                                         htmltools::includeMarkdown("md_files/install.md") )),
+                              tabPanel("Annotate scRNA-seq datasets using celltype markerset",
                                        fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Annotate scRNA-seq (Reference-based)",
+                                         htmltools::includeMarkdown("md_files/scrna_marker.md") )),
+                              tabPanel("Annotate scRNA-seq datasets using scRNA-seq reference or hybrid approach (recommended)",
                                        fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Annotate scRNA-seq (Hybrid-based) [Recommended]",
+                                         htmltools::includeMarkdown("md_files/scrna-ref-hybrid.md") )),
+                              tabPanel("Annotate scATAC-seq datasets using both (marker and reference based approach)",
                                        fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Installation",
+                                         htmltools::includeMarkdown("md_files/atac.md") )),
+                              tabPanel("Annotate spatial omics datasets using both (marker and reference based approach)",
                                        fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Installation",
-                                       fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Installation",
-                                       fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Installation",
-                                       fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Installation",
-                                       fluidRow(
-                                         htmltools::includeMarkdown("about.md") )),
-                              tabPanel("Installation",
-                                       fluidRow(
-                                         htmltools::includeMarkdown("about.md") ))),
-                  
+                                         htmltools::includeMarkdown("md_files/spatial.md") ))),
+
                   tabPanel("CellMarkerDB",
                            sidebarPanel(
-                             selectizeInput("tissue_type", "Choose tissue type", 
+                             selectizeInput("tissue_type", "Choose tissue type",
                                             choices = all_tissu_types),
                              sankeyNetworkOutput("hirar_plot")),
                            mainPanel(
@@ -116,7 +101,7 @@ ui <- fluidPage(theme = shinytheme("yeti"),
                                             choices = all_tissu_types))
                            ,mainPanel(h6("This UMAP is a representation dataset from the full size scRNA-seq reference"),
                              plotlyOutput("umap_plot",height = "600px", width = "700px"),
-      
+
                                       downloadButton("downloadData_scref", "Download (scRNA-seq)"))),
                   tabPanel("Suggest a marker",
                            sidebarPanel(htmlOutput("map")),
@@ -126,13 +111,13 @@ ui <- fluidPage(theme = shinytheme("yeti"),
                            "Blank")
                             ))
 
-# Define server function  
+# Define server function
 server <- function(input, output) {
   datasetInput <- reactive({
     switch(input$tissue_type,
            cardf[cardf$cyl==input$tissue_type,])
   })
-  
+
   subsetdf <- reactive({subsetdf=read_excel("datasets/scinfer_combined_hs.xlsx",
                                             sheet = input$tissue_type)
   row.names(subsetdf) <- NULL
@@ -148,7 +133,7 @@ server <- function(input, output) {
   output$suggest_dt <- DT::renderDataTable(DT::datatable({
     suggest_marker_df
   }))
-  
+
 
 output$umap_plot <- renderPlotly({
   umapdf=read_excel("datasets/scinferdb_MASTER_UMAP.xlsx",
@@ -156,29 +141,29 @@ output$umap_plot <- renderPlotly({
   row.names(umapdf) <- NULL
   umapplt <- ggplot(data=umapdf,aes(x=umap_1,y=umap_2,color=Celltype))+geom_point(size=0.4)+xlab("UMAP1")+ylab("UMAP2")+theme_bw()
   umapplt})
-  
+
 output$hirar_plot <- renderSankeyNetwork({
     links<-read_excel("datasets/hirarchy_tissue_scinfer.xlsx",
                       sheet = input$tissue_type)
     nodes<- data.frame(
-      name=c(as.character(links$source), 
+      name=c(as.character(links$source),
              as.character(links$target)) %>% unique())
-    
-    links$IDsource <- match(links$source, nodes$name)-1 
-    links$IDtarget <- match(links$target, nodes$name)-1 
+
+    links$IDsource <- match(links$source, nodes$name)-1
+    links$IDtarget <- match(links$target, nodes$name)-1
     splot<- sankeyNetwork(Links = links, Nodes = nodes,
                   Source = "IDsource", Target = "IDtarget",
-                  Value = "value", NodeID = "name", 
+                  Value = "value", NodeID = "name",
                   sinksRight=FALSE,fontSize = 12)
     splot
   })
-  
+
   subsetdf <- reactive({subsetdf=read_excel("datasets/scinfer_combined_hs.xlsx",
                                             sheet = input$tissue_type)
   row.names(subsetdf) <- NULL
   subsetdf
   })
-  
+
   output$downloadData <- downloadHandler(
     filename = function() {
       paste0("ScInfeR","_",input$tissue_type,'.csv')
@@ -197,7 +182,7 @@ output$hirar_plot <- renderSankeyNetwork({
     }
   )
   #output$downloadData_scrna <- downloadLink("https://figshare.com/ndownloader/files/34702051")
-  
+
   output$txt_out1<-renderText({paste("Cell marker list for tissue:",input$tissue_type)})
   output$txtout <- renderText({
     paste( input$txt1, input$txt2, sep = " " )

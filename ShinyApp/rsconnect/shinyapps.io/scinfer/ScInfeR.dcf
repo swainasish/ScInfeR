@@ -5,7 +5,7 @@ account: scinfer
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12372189
-bundleId: 8914139
+bundleId: 9084867
 url: https://scinfer.shinyapps.io/ScInfeR/
 version: 1
 asMultiple: FALSE
