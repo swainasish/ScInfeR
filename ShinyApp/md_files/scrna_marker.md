@@ -21,8 +21,7 @@ DimPlot(ts_pancreas,reduction = "umap",group.by = "Ground truth")
 Fetch the marker-set from ScInfeRDB \
 You can change the tissue type by change the argument
 ```{r}
-scinfer_marker_pancreas <- readxl::read_excel("scinfer_combined_hs.xlsx", sheet = "Pancreas")
-scinfer_marker_pancreas <- scinfer_marker_pancreas[,c("celltype","marker","weight")]
+scinfer_marker_pancreas <- fetch_markerset(tissue_type = "Pancreas")
 ```
 Celltype annotation by ScInfeR, using marker-set as guidance
 ```{r}

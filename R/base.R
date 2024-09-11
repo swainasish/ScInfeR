@@ -11,6 +11,7 @@ fetch_markerset <- function(tissue_type){
   if(tissue_type %in% all_tissu_types){
     m_df <- openxlsx::read.xlsx("https://raw.githubusercontent.com/swainasish/ScInfeR/master/ShinyApp/datasets/scinfer_combined_hs.xlsx",
                                 sheet = tissue_type)
+    m_df <- m_df[,c("celltype","marker","weight")]
     return(m_df)
   }
   else{

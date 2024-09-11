@@ -25,11 +25,10 @@ Load the reference dataset and fetch markers from the reference dataset \
 combined the markers fetched from reference dataset and markers from ScInfeRDB
 
 ```{r}
-scinfer_marker_pancreas <- readxl::read_excel("scinfer_combined_hs.xlsx", sheet = "Pancreas")
-scinfer_marker_pancreas <- scinfer_marker_pancreas[,c("celltype","marker","weight")]
+scinfer_marker_pancreas <- fetch_markerset(tissue_type = "Pancreas")
 ```
 ```{r}
-scinferdb_pancreas <- LoadSeuratRds("/ScInfeR_pancreas.rds")
+scinferdb_pancreas <- fetch_scRNA_reference(tissue_type="Pancreas",path=F)
 pancreas_marker <- get_marker_from_ref_matrix(exp_mat=scinferdb_pancreas@assays$RNA$counts,
                                            annotations=scinferdb_pancreas$Celltype,
                                            umap_cor=scinferdb_pancreas@reductions$umap@cell.embeddings,
