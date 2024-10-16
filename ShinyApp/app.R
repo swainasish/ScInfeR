@@ -99,7 +99,8 @@ ui <- fluidPage(theme = shinytheme("yeti"),
                            sidebarPanel(
                              selectizeInput("tissue_type_ref", "Choose tissue type",
                                             choices = all_tissu_types))
-                           ,mainPanel(h6("This UMAP is a representation dataset from the full size scRNA-seq reference"),
+                           ,mainPanel(h6("Please wait 2-10 seconds"),
+                                         h5("Note: This UMAP is a representation dataset from the full size scRNA-seq reference"),
                              plotlyOutput("umap_plot",height = "600px", width = "700px"),
 
                                       downloadButton("downloadData_scref", "Download (scRNA-seq)"))),

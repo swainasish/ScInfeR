@@ -8,7 +8,7 @@ Available_reference_tissue_type <- function(){
 fetch_markerset <- function(tissue_type){
   all_tissue_types <- c("Bladder", "Bone marrow", "Brain", "Breast", "Eye", "Heart",
                         "Intestine", "Kidney", "Liver", "Lungs", "Pancreas", "PBMC", "Skin")
-  if(tissue_type %in% all_tissu_types){
+  if(tissue_type %in% all_tissue_types){
     m_df <- openxlsx::read.xlsx("https://raw.githubusercontent.com/swainasish/ScInfeR/master/ShinyApp/datasets/scinfer_combined_hs.xlsx",
                                 sheet = tissue_type)
     m_df <- m_df[,c("celltype","marker","weight")]
@@ -127,7 +127,7 @@ core_func<- function(expression_matrix ,
   cat("Expression matrix extracted from Seurat object having Gene_num: ",n_gene,", Sample_num: ",n_cell,"\n")
   #differential expression analysis using presto
   clus_marker_df <- wilcoxauc(expression_matrix, group_annt)
-  uniq_clus = base::unique(group_annt)
+  uniq_clus <- base::unique(group_annt)
   all_gene_names <- rownames(expression_matrix)
   ct_marker_df <- data.frame(ct_marker_df)
   common_genes <- intersect(all_gene_names,ct_marker_df[,"marker"])
@@ -173,7 +173,7 @@ core_func<- function(expression_matrix ,
     log_print("printing masterdf",console = F)
     log_print(master_df,console = F)
     if(valid_top_genes<9){
-      master_df$cosine<- 1
+      master_df$cosine <- 1
     }
     log_print("printing masterdf:corrected",console = F)
     log_print(master_df,console = F)
