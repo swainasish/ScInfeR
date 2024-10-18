@@ -1,3 +1,9 @@
+library(Seurat)
+library(presto)
+library(lsa)
+library(FNN)
+library(dplyr)
+library(logr)
 Available_reference_tissue_type <- function(){
   figshare_file <-read.csv("https://raw.githubusercontent.com/swainasish/ScInfeR/master/ShinyApp/datasets/download_url_csv.csv")
   avl <- data.frame(all_tissu_types)
@@ -164,19 +170,19 @@ core_func<- function(expression_matrix ,
     cosine_simi = data.frame(names(cosine_simi),cosine_simi)
     colnames(cosine_simi) = c("feature","cosine")
     #step2: find AUC value
-    auc_ct_gene = subset(clus_marker, feature %in% ct_genes )[,c("feature","auc")]
+    auc_ct_gene = subset(clus_marker, feature %in% master_df$feature )[,c("feature","auc")]
     rownames(auc_ct_gene) <- auc_ct_gene$feature
     auc_ct_gene <- auc_ct_gene[master_df$feature,]
     #merge_all_information
     master_df <- cbind(master_df,cosine_simi[,"cosine"],auc_ct_gene[,"auc"])
     colnames(master_df) <- c("celltype","feature","weight","cosine","auc")
-    log_print("printing masterdf",console = F)
-    log_print(master_df,console = F)
+    #log_print("printing masterdf",console = F)
+    #log_print(master_df,console = F)
     if(valid_top_genes<9){
       master_df$cosine <- 1
     }
-    log_print("printing masterdf:corrected",console = F)
-    log_print(master_df,console = F)
+    #log_print("printing masterdf:corrected",console = F)
+    #log_print(master_df,console = F)
     #   master_df = merge(master_df,cosine_simi,by="feature")
     #   master_df = merge(master_df,auc_ct_gene,by="feature")
     #   master_df = master_df[!duplicated(master_df),]
@@ -330,7 +336,7 @@ predict_celltype_scRNA_seurat <- function(s_object,
                                           n_neighbor=10){
   t1 = Sys.time()
   DefaultAssay(s_object) <- assay_name
-  expression_matrix <- GetAssayData(object = s_object, assay = assay_name, slot = slot_name)
+  expression_matrix <- GetAssayData(object = s_object, assay = assay_name)
   umap_embd <- Embeddings(s_object,reduction=reduction)
   ct_output <- core_func(expression_matrix ,
                          group_annt,
