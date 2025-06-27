@@ -14,7 +14,12 @@ devtools::install_github("swainasish/ScInfeR")
 ```
 source("https://raw.githubusercontent.com/swainasish/ScInfeR/master/R/base.R")
 ```
-## Annotate scRNA-seq datasets using marker-set
+### Cite the Paper
+```
+Asish Kumar Swain, Rajveer Singh Shekhawat, Pankaj Yadav, ScInfeR: an efficient method for annotating cell types and sub-types in single-cell RNA-seq, ATAC-seq, and spatial omics, Briefings in Bioinformatics, Volume 26, Issue 3, May 2025, bbaf253, https://doi.org/10.1093/bib/bbaf253
+```
+## Tutorials
+### Annotate scRNA-seq datasets using marker-set
 Load the libraries
 ```{r}
 library(Seurat)
