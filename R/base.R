@@ -106,7 +106,9 @@ subtype_classification <- function(mat_st,umap_proj,st_info,own_weight=0.5,n_nei
   hybrid_mat <- own_weight*mat_st + nei_weight*st_mat_neighbor
   colnames(hybrid_mat) <- st_info[,"celltype"]
   #minmax transformation
+  log_print(head(hybrid_mat),console = F)
   hybrid_mat_norm <- (t(t(hybrid_mat)/colSums(hybrid_mat)))*10000
+  #hybrid_mat_norm <- hybrid_mat
   #calculate colmean
   colmean_ct <- t(apply(hybrid_mat_norm,1, function(x) tapply(x,colnames(hybrid_mat_norm),mean)))
   st_call <- colnames(colmean_ct)[apply(colmean_ct,1,which.max)]
@@ -195,13 +197,14 @@ core_func<- function(expression_matrix ,
     aggrgate_df$"norm_weight" = aggrgate_df[,"weight_func"] / aggrgate_df[,"weight_sum"]
     #checking for subtype present or not in the clusters
     max_val <- max(aggrgate_df[,"norm_weight"])
-    threshold <- max_val - 0.02
+    threshold <- max_val - 0.1
     st_bool <- aggrgate_df[,"norm_weight"] > threshold
     st_avl <-  sum(st_bool)
     log_print(aggrgate_df,console = F)
     if (st_avl >1) {
       log_print(cat("Subtype possibility in",clus,"\n"),console = F)
       st_clus_cts <- aggrgate_df[,"celltype"][st_bool]
+      #st_clus_cts <- st_clus_cts[1:2]
       st_m_df <- subset(ct_marker_df, celltype %in% st_clus_cts)
       st_mat <- clus_exp_mat
       st_mat <- st_mat[st_m_df[,"marker"],]
@@ -337,6 +340,7 @@ predict_celltype_scRNA_seurat <- function(s_object,
   t1 = Sys.time()
   DefaultAssay(s_object) <- assay_name
   expression_matrix <- GetAssayData(object = s_object, assay = assay_name)
+  #expression_matrix <- log1p(expression_matrix)
   umap_embd <- Embeddings(s_object,reduction=reduction)
   ct_output <- core_func(expression_matrix ,
                          group_annt,
