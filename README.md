@@ -14,6 +14,11 @@ devtools::install_github("swainasish/ScInfeR")
 ```
 source("https://raw.githubusercontent.com/swainasish/ScInfeR/master/R/base.R")
 ```
+Sometimes during installation, an error occurs due to presto package, presto can be installed with,
+```
+devtools::install_github("immunogenomics/presto")
+```
+
 ### 📚 Cite the Paper
 
 > **Asish Kumar Swain**, Rajveer Singh Shekhawat, Pankaj Yadav.  
